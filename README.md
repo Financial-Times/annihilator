@@ -2,6 +2,20 @@
 
 Annihilator is a small haproxy container which picks up flex specific routing keys from consul.
 
+Running
+--
+
+```bash
+$ docker run -P -e CONSUL=http://my-consul.ft.com:8500 quay.io/financialtimes/annihilator
+
+Build
+--
+
+```bash
+$ docker build -t quay.io/financialtimes/annihilator .
+$ docker push quay.io/financialtimes/annihilator
+```
+
 Licence
 --
 
