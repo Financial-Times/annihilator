@@ -1,0 +1,57 @@
+global
+        log 127.0.0.1   local0
+        log 127.0.0.1   local1 notice
+        maxconn 4096
+        user haproxy
+        group haproxy
+
+defaults
+        log     global
+        mode    http
+        option  httplog
+        option  dontlognull
+        option forwardfor
+        option http-server-close
+        stats enable
+        stats auth {{key "annihilator/haproxy/username"}}:{{key "annihilator/haproxy/password" }}
+        stats uri /stats
+
+        retries                 3
+        timeout http-request    10s
+        timeout queue           1m
+        timeout connect         10s
+        timeout client          1m
+        timeout server          1m
+        timeout http-keep-alive 10s
+        timeout check           10s
+
+frontend http-in
+        bind :80
+        acl host_workflow hdr(host) -i {{key "annihilator/flex/workflow_domain"  }}
+        acl host_metadata hdr(host) -i {{key "annihilator/flex/metadata_domain"  }}
+
+        use_backend workflow_cluster if host_workflow
+        use_backend metadata_cluster if host_metadata
+
+        default_backend master
+
+backend workflow_cluster
+        balance leastconn
+        option httpclose
+        cookie JSESSIONID prefix
+        {{range service "flex-workflowdesigner-app"}}
+        server {{.Node}} {{.Address}}:{{.Port}}{{end}}
+
+backend metadata_cluster
+        balance leastconn
+        option httpclose
+        cookie JSESSIONID prefix
+        {{range service "flex-metadatadesigner-app"}}
+        server {{.Node}} {{.Address}}:{{.Port}}{{end}}
+
+backend master
+        balance leastconn
+        option httpclose
+        cookie JSESSIONID prefix
+        {{range service "flex-master-30044"}}
+        server {{.Node}} {{.Address}}:{{.Port}}{{end}}
