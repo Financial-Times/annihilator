@@ -7,6 +7,7 @@ Running
 
 ```bash
 $ docker run -P -e CONSUL=http://my-consul.ft.com:8500 quay.io/financialtimes/annihilator
+```
 
 Build
 --
