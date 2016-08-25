@@ -53,5 +53,5 @@ backend master
         balance leastconn
         option httpclose
         cookie JSESSIONID prefix
-        {{range service "flex-master-30044"}}
+        {{range service "flex-master-20044"}}
         server {{.Node}} {{.Address}}:{{.Port}}{{end}}
