@@ -31,7 +31,7 @@ frontend http-in
         acl host_metadata hdr(host) -i {{key "annihilator/flex/metadata_domain"  }}
 
         acl path_healthcheck path_end -i /__healthcheck
-
+        acl path_healthcheck path_end -i /__health
 
         use_backend workflow_cluster if host_workflow
         use_backend metadata_cluster if host_metadata

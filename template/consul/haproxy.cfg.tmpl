@@ -1,0 +1,39 @@
+global
+        log 127.0.0.1   local0
+        log 127.0.0.1   local1 notice
+        maxconn 4096
+        user haproxy
+        group haproxy
+
+defaults
+        log     global
+        mode    http
+        option  httplog
+        option  dontlognull
+        option forwardfor
+        option http-server-close
+        stats enable
+        stats uri /stats
+
+        retries                 3
+        timeout http-request    10s
+        timeout queue           1m
+        timeout connect         10s
+        timeout client          1m
+        timeout server          1m
+        timeout http-keep-alive 10s
+        timeout check           10s
+
+frontend http-in
+        bind :80
+        acl path_healthcheck path_end -i /__healthcheck
+        acl path_healthcheck path_end -i /__health
+
+        use_backend monitoreador if path_healthcheck
+        default_backend consul
+
+backend monitoreador
+        server localhost 172.17.0.1:8000
+
+backend consul
+        server localhost 127.0.0.1:8500

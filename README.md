@@ -1,12 +1,27 @@
 ![annihilator logo](doc/logo.png)
 
-Annihilator is a small haproxy container which picks up flex specific routing keys from consul.
+    Annihilator is a small haproxy container which solves like *all* the routing needs of a flex cluster at the FT.
 
 Running
 --
 
+Routing for consul nodes:
+
 ```bash
-$ docker run -P -e CONSUL=http://my-consul.ft.com:8500 quay.io/financialtimes/annihilator
+$ docker run -P -e MODE=consul quay.io/financialtimes/annihilator
+```
+
+Routing for application routing:
+
+```bash
+$ docker run -P -e MODE=router -e CONSUL='https:/consul.example.com' quay.io/financialtimes/annihilator
+```
+
+Note: the variable `$MODE` also defaults to `router`, so the following are equivalent:
+
+```bash
+$ docker run -P -e MODE=router -e CONSUL='https:/consul.example.com' quay.io/financialtimes/annihilator
+$ docker run -P -e CONSUL='https:/consul.example.com' quay.io/financialtimes/annihilator
 ```
 
 Build

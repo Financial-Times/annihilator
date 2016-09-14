@@ -5,12 +5,17 @@ set -x
 set -e
 
 
-: ${CONSUL:?}
-: ${SLEEP:0}
+: ${MODE:=router}
+: ${SLEEP:1}
 
 sleep ${SLEEP}   # Oftentimes we want to defer this until stuff is running
 
-/consul-template -consul=${CONSUL} -template=template/haproxy.cfg.tmpl:/annihilator/haproxy.cfg -once
+if [ "${MODE}" == "router" ]; then
+    : ${CONSUL:?}
+    /consul-template -consul=${CONSUL} -template=template/router/haproxy.cfg.tmpl:/annihilator/haproxy.cfg -once
+else
+    cp -v template/consul/haproxy.cfg.tmpl /annihilator/haproxy.cfg
+fi
 
 cat /annihilator/haproxy.cfg
 
