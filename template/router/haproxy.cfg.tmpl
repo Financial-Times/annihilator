@@ -47,18 +47,18 @@ backend workflow_cluster
         option httpclose
         cookie JSESSIONID prefix
         {{range service "flex-workflowdesigner-app"}}
-        server {{.Node}} {{.Address}}:{{.Port}}{{end}}
+        server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
 
 backend metadata_cluster
         balance leastconn
         option httpclose
         cookie JSESSIONID prefix
         {{range service "flex-metadatadesigner-app"}}
-        server {{.Node}} {{.Address}}:{{.Port}}{{end}}
+        server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
 
 backend master
         balance leastconn
         option httpclose
         cookie JSESSIONID prefix
         {{range service "flex-master-20044"}}
-        server {{.Node}} {{.Address}}:{{.Port}}{{end}}
+        server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
