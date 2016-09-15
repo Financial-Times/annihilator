@@ -33,11 +33,17 @@ frontend http-in
         acl path_healthcheck path_end -i /__healthcheck
         acl path_healthcheck path_end -i /__health
 
+        acl path_monitoring path_end -i /monitoring
+
         use_backend workflow_cluster if host_workflow
         use_backend metadata_cluster if host_metadata
         use_backend monitoreador if path_healthcheck
+        use_backend monitoring if path_monitoring
 
         default_backend master
+
+backend monitoring
+        http-request redirect location http://healthcheck.ft.com/?dashboardname=flex&services={{key "annihilator/haproxy/all_hosts"}} code 302
 
 backend monitoreador
         server localhost 172.17.0.1:8000
