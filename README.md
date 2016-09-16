@@ -1,6 +1,6 @@
 ![annihilator logo](doc/logo.png)
 
-    Annihilator is a small haproxy container which solves like *all* the routing needs of a flex cluster at the FT.
+Annihilator is a small haproxy container which solves like *all* the routing needs of a flex cluster at the FT.
 
 Running
 --
