@@ -35,10 +35,13 @@ frontend http-in
 
         acl path_monitoring path_end -i /monitoring
 
+        acl path_ft_pc path_end -i /ft/projectcreator
+
         use_backend workflow_cluster if host_workflow
         use_backend metadata_cluster if host_metadata
         use_backend monitoreador if path_healthcheck
         use_backend monitoring if path_monitoring
+        use_backend project-creator if path_ft_pc
 
         default_backend master
 
@@ -54,13 +57,21 @@ backend workflow_cluster
         cookie JSESSIONID prefix
         {{range service "flex-workflowdesigner-app"}}
         server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
-
+n
 backend metadata_cluster
         balance leastconn
         option httpclose
         cookie JSESSIONID prefix
         {{range service "flex-metadatadesigner-app"}}
         server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
+
+backend project-creator
+        http-request set-path /
+        balance leastconn
+        option httpclose
+        {{range service "project-creator"}}
+        server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
+
 
 backend master
         balance leastconn

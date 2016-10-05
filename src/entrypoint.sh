@@ -14,7 +14,7 @@ if [ "${MODE}" == "router" ]; then
     : ${CONSUL:?}
     /consul-template -consul=${CONSUL} -template=template/router/haproxy.cfg.tmpl:/annihilator/haproxy.cfg -once
 else
-    cp -v template/consul/haproxy.cfg.tmpl /annihilator/haproxy.cfg
+    cp -v template/${MODE}/haproxy.cfg.tmpl /annihilator/haproxy.cfg
 fi
 
 cat /annihilator/haproxy.cfg
