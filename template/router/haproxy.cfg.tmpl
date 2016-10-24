@@ -78,6 +78,8 @@ backend s3-club-7
         http-request set-path /
         balance leastconn
         option httpclose
+        compression algo gzip
+        compression type application/json "application/json; charset=utf-8"
         {{range service "s3-club-7"}}
         server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
 
