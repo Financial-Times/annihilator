@@ -36,7 +36,7 @@ frontend http-in
         acl path_monitoring path_end -i /monitoring
 
         acl path_ft_pc path_end -i /ft/projectcreator
-        acl path_ft_s3 path_end -i /ft/upload
+        acl path_ft_s3 path_beg -i /ft/upload/
 
         use_backend workflow_cluster if host_workflow
         use_backend metadata_cluster if host_metadata
@@ -75,9 +75,12 @@ backend project-creator
         server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
 
 backend s3-club-7
-        http-request set-path /
+        reqrep ^([^\ :]*)\ /ft/upload/(.*)     \1\ /\2
+
         balance leastconn
         option httpclose
+        compression algo gzip
+        compression type application/json "application/json; charset=utf-8"
         {{range service "s3-club-7"}}
         server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
 
