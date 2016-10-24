@@ -36,7 +36,7 @@ frontend http-in
         acl path_monitoring path_end -i /monitoring
 
         acl path_ft_pc path_end -i /ft/projectcreator
-        acl path_ft_s3 path_end -i /ft/upload
+        acl path_ft_s3 path_beg -i /ft/upload/
 
         use_backend workflow_cluster if host_workflow
         use_backend metadata_cluster if host_metadata
