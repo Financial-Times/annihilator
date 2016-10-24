@@ -75,7 +75,8 @@ backend project-creator
         server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
 
 backend s3-club-7
-        http-request set-path /
+        reqrep ^([^\ :]*)\ /ft/upload/(.*)     \1\ /\2
+
         balance leastconn
         option httpclose
         compression algo gzip
