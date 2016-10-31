@@ -86,6 +86,7 @@ backend s3-club-7
 
 backend master
         balance leastconn
+        http-response add-header Access-Control-Allow-Origin *
         option httpclose
         cookie JSESSIONID prefix
         {{range service "flex-master-20044"}}
