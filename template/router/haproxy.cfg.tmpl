@@ -64,6 +64,7 @@ backend metadata_cluster
         balance leastconn
         option httpclose
         cookie JSESSIONID prefix
+
         {{range service "flex-metadatadesigner-app"}}
         server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
 
@@ -86,6 +87,7 @@ backend s3-club-7
 
 backend master
         balance leastconn
+        http-response add-header Access-Control-Allow-Origin *
         option httpclose
         cookie JSESSIONID prefix
         {{range service "flex-master-20044"}}
