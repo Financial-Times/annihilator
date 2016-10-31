@@ -64,7 +64,6 @@ backend metadata_cluster
         balance leastconn
         option httpclose
         cookie JSESSIONID prefix
-
         {{range service "flex-metadatadesigner-app"}}
         server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
 
