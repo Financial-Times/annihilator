@@ -38,6 +38,9 @@ frontend http-in
         acl path_ft_pc path_end -i /ft/projectcreator
         acl path_ft_s3 path_beg -i /ft/upload/
 
+        # CORS Capture origin
+        capture request header origin len 128
+
         use_backend workflow_cluster if host_workflow
         use_backend metadata_cluster if host_metadata
         use_backend monitoreador if path_healthcheck
@@ -86,7 +89,12 @@ backend s3-club-7
 
 backend master
         balance leastconn
-        http-response add-header Access-Control-Allow-Origin *
+        http-response add-header Access-Control-Allow-Origin %[capture.req.hdr(0)] if { capture.req.hdr(0) -m found  }
+        rspadd Access-Control-Allow-Headers:\ Accept-Encoding,\ Accept-Languge,\ referer,\ Content-Type,\ origin,\ authorization,\ accept,\ client-security-token,\ cache-control,\ Set-Cookie,\ Cookie if { capture.req.hdr(0) -m found  }
+        rspadd Access-Control-Allow-Methods:\ GET,\ PUT,\ POST,\ DELETE
+        http-response add-header Access-Control-Max-Age 10000
+        http-response add-header Access-Control-Allow-Credentials true
+
         option httpclose
         cookie JSESSIONID prefix
         {{range service "flex-master-20044"}}
