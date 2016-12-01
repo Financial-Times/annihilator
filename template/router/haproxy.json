@@ -1,0 +1,5 @@
+template {
+      source = "template/router/haproxy.cfg.tmpl"
+      destination = "/annihilator/haproxy.cfg"
+      command = "haproxy -f /annihilator/haproxy.cfg -sf $(pidof haproxy) &"
+}

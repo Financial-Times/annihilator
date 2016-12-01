@@ -6,17 +6,18 @@ set -e
 
 
 : ${MODE:=router}
-: ${SLEEP:1}
+: ${SLEEP:=1}
 
 sleep ${SLEEP}   # Oftentimes we want to defer this until stuff is running
 
 if [ "${MODE}" == "router" ]; then
     : ${CONSUL:?}
-    /consul-template -consul=${CONSUL} -template=template/router/haproxy.cfg.tmpl:/annihilator/haproxy.cfg -once
+    #/consul-template -consul=${CONSUL} -template=template/router/haproxy.cfg.tmpl:/annihilator/haproxy.cfg -once
+    /consul-template -consul=${CONSUL} -config=template/router/haproxy.json
 else
     cp -v template/${MODE}/haproxy.cfg.tmpl /annihilator/haproxy.cfg
+    exec haproxy -V -f /annihilator/haproxy.cfg
 fi
 
 cat /annihilator/haproxy.cfg
 
-exec haproxy -V -f /annihilator/haproxy.cfg
