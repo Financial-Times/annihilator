@@ -84,6 +84,8 @@ backend s3-club-7
         option httpclose
         compression algo gzip
         compression type application/json "application/json; charset=utf-8"
+        http-request set-header referrer %[capture.req.hdr(0)]
+        http-response set-header Access-Control-Allow-Origin %[capture.req.hdr(0)] if { capture.req.hdr(0) -m found  }
         {{range service "s3-club-7"}}
         server {{.Node}} {{.Address}}:{{.Port}} check cookie {{.Node}}_{{.Port}} {{end}}
 
